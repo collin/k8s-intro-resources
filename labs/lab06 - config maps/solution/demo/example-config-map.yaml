@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+  COOL_FACTOR: "2000"
+  USE_LEFT_HANDED_DOORKNOBS: "True"
+  "elevator.config": |
+    all-floors: yes
+    express: only on wendnedays
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-volume-config-pod
+spec:
+  volumes:
+    - name: config-volume
+      configMap:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+        name: example-config
+  containers:
+    - name: main-container
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+      image: busybox
+      volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+      env:
+        - name: COOL_FACTOR
+          valueFrom:
+            configMapKeyRef:
+              # The ConfigMap containing the value you want to assign to SPECIAL_LEVEL_KEY
+              name: example-config
+              # Specify the key associated with the value
+              key: COOL_FACTOR
+        - name: DOORKNOBS_ARE_LEFT_HANDED
+          valueFrom:
+            configMapKeyRef:
+              name: example-config
+              key: USE_LEFT_HANDED_DOORKNOBS
+      args:
+        - /bin/sh
+        - -c
+        - >
+          while true; do
+            echo "$(date) INFO hello from main-container";
+            sleep 1;
+          done
