@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: index-job
+spec:
+  completions: 10
+  completionMode: Indexed
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+        - name: busybox
+          image: busybox:latest
+          imagePullPolicy: Always
+          command: ["echo", "$JOB_COMPLETION_INDEX"]
+      restartPolicy: Never
+  backoffLimit: 4
