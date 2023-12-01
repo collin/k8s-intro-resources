@@ -1,0 +1,6 @@
+FROM node:20
+
+COPY api.js .
+
+EXPOSE 80
+CMD ["node", "api.js"]

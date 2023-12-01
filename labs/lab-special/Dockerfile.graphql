@@ -1,0 +1,5 @@
+FROM node:20
+
+COPY graphql.js .
+
+CMD ["node", "graphql.js"]
