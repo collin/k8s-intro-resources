@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: example-ingress
@@ -8,11 +8,17 @@ spec:
   rules:
     - http:
         paths:
-          - path: /apple
+          - pathType: "Exact"
+            path: /apple
             backend:
-              serviceName: apple-service
-              servicePort: 5678
-          - path: /banana
+              service:
+                name: apple-service
+                port:
+                  number: 5678
+          - pathType: "Exact"
+            path: /banana
             backend:
-              serviceName: banana-service
-              servicePort: 5678
+              service:
+                name: banana-service
+                port:
+                  number: 5678
